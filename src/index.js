@@ -45,17 +45,19 @@ function checksTodoExists(request, response, next) {
   }
 
   const { username } = request.headers;
+
   const user = users.find((user) => user.username === username);
+  const todo = user?.todos.find((todo) => todo.id === todoId);
 
-  if (!user) {
-    return response.status(404).json({ error: "User not found." });
+  if (!user || !todo) {
+    const errorMessage = user ? 'Todo not found' : 'User not found';
+    return response.status(404).json({ error: errorMessage });
   }
 
-  const todo = user.todos.find((todo) => todo.id === todoId);
 
-  if (!todo) {
-    return response.status(404).json({ error: "Todo not found." });
-  }
+  // if (!todo) {
+  //   return response.status(404).json({ error: "Todo not found." });
+  // }
 
   request.user = user;
   request.todo = todo;
